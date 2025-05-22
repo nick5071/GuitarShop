@@ -25,8 +25,10 @@ Comandos pacote NuGet (Entity framework)
 
 # Programas Utilizados
 • Visual Studio 
+
 • Sql Server
-• Pacotes nuget
+
+• Pacote nuget
  
   
  
