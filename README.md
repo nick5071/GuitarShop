@@ -27,11 +27,6 @@ Comandos pacote NuGet (Entity framework)
 • Visual Studio 
 • Sql Server
 • Pacotes nuget
-
-
-• Sql Server 19
-
-• Insomnia
  
   
  
