@@ -1,0 +1,194 @@
+﻿@model TesteApp.Models.Produtos
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cadastro de Produto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 700px;
+            margin: 50px auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-ml {
+            background-color: #ffe600;
+            color: #333;
+            font-weight: bold;
+            border: none;
+        }
+
+            .btn-ml:hover {
+                background-color: #ffdd00;
+            }
+
+        #imagePreview {
+            margin-top: 15px;
+            max-width: 100%;
+            height: auto;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    @if (TempData["Mensagem"] != null)
+    {
+        <div class="alert alert-success container">
+            @TempData["Mensagem"]
+        </div>
+    }
+
+    <div class="form-container">
+        <h4 class="mb-4">Publicar um produto</h4>
+
+
+        <form asp-action="CadastrarProduto" asp-controller="Home" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label asp-for="Nome" class="form-label"></label>
+                <input asp-for="Nome" class="form-control" placeholder="Ex: Guitarra Vintage V100 Paradise" maxlength="100" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Descricao" class="form-label"></label>
+                <textarea asp-for="Descricao" class="form-control" rows="4" placeholder="Descreva os detalhes do produto..." maxlength="500"></textarea>
+                <span asp-validation-for="Descricao" class="text-danger"></span>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Preço</label>
+                    <input asp-for="Preco" id="precoInput" class="form-control"
+                           data-val="true"
+                           data-val-number="Informe um número válido para o preço." placeholder="R$0,00" maxlength="9"/>
+                    <span asp-validation-for="Preco" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Quantidade" class="form-label"></label>
+                    <input asp-for="Quantidade" data-val="true" id="quantidade" data-val-number="Informe um número válido" class="form-control" placeholder="0" min="0" maxlength="9" />
+                    <span asp-validation-for="Quantidade" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Imagem" class="form-label"></label>
+                <input asp-for="Imagem" type="file" class="form-control" id="movieImage" accept="image/*" />
+                <span asp-validation-for="Imagem" class="text-danger"></span>
+                <small class="form-text text-muted">Escolha uma imagem.</small>
+                <img id="imagePreview" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Imagem2" class="form-label">Segunda Imagem(opcional)</label>
+                <input asp-for="Imagem2" type="file" class="form-control" id="movieImage2" accept="image/*" />
+                <small class="form-text text-muted">Escolha uma imagem.</small>
+                <img id="imagePreview2" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Imagem3" class="form-label">Terceira Imagem(opcional)</label>
+                <input asp-for="Imagem3" type="file" class="form-control" id="movieImage3" accept="image/*" />
+                <small class="form-text text-muted">Escolha uma imagem.</small>
+                <img id="imagePreview3" />
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-ml btn-lg">Publicar</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('movieImage').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const image = document.getElementById('imagePreview');
+                image.src = e.target.result;
+                image.style.display = 'block';
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        });
+
+          document.getElementById('movieImage2').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const image = document.getElementById('imagePreview2');
+                image.src = e.target.result;
+                image.style.display = 'block';
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        });
+
+
+          document.getElementById('movieImage3').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const image = document.getElementById('imagePreview3');
+                image.src = e.target.result;
+                image.style.display = 'block';
+            };
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        });
+
+        const precoInput = document.getElementById('precoInput');
+
+        precoInput.addEventListener('input', function () {
+
+            let valor = this.value.replace(/\D/g, '');
+
+
+            if (valor.length === 0) {
+                this.value = '';
+                return;
+            }
+
+            valor = (parseFloat(valor) / 100).toFixed(2);
+
+            this.value = valor;
+        });
+
+        document.getElementById('quantidade').addEventListener('input', function () {
+
+            this.value = this.value.replace(/\D/g, '');
+
+            if (this.value.length > 9) {
+                this.value = this.value.slice(0, 9);
+            }
+        });
+    </script>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+
+    }
+</body>
+</html>

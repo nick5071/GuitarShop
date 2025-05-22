@@ -1,0 +1,178 @@
+﻿@model IEnumerable<TesteApp.Models.Produtos>
+
+@{
+    ViewData["Title"] = "Produtos";
+    var filtroNome = ViewBag.FiltroNome as string;
+    var precoMin = ViewBag.PrecoMin as string;
+    var precoMax = ViewBag.PrecoMax as string;
+    var ordenacao = ViewBag.Ordenacao as string;
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .product-card {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .product-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            }
+
+        .product-img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2em;
+            max-height: 2.4em;
+            min-height: 2.4em;
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            color: #e60000;
+            font-weight: bold;
+        }
+
+        .product-description {
+            font-size: 0.9rem;
+            color: #666;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2em;
+            max-height: 3.6em;
+            min-height: 3.6em;
+        }
+
+        .product-card-body {
+            padding: 15px;
+        }
+
+        .badge-frete {
+            background-color: #ffdd00;
+            color: #333;
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        .price-old {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 0.9rem;
+            margin-right: 5px;
+        }
+
+        .rating-stars {
+            color: #ffc107;
+            font-size: 0.9rem;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="container py-5">
+        <h1 class="text-center mb-4">Produtos Disponíveis</h1>
+
+        <form method="get" asp-action="BuscarProduto2" asp-controller="Home" class="row g-3 mb-4">
+            <div class="col-md-4">
+                <input type="text" name="filtroNome" class="form-control" placeholder="Buscar por nome" value="@filtroNome" />
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="precoMin" class="form-control" placeholder="Preço mínimo" value="@precoMin" />
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="precoMax" class="form-control" placeholder="Preço máximo" value="@precoMax" />
+            </div>
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            </div>
+        </form>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @if (!Model.Any())
+            {
+                <div class="alert alert-warning text-center w-100">
+                    Nenhum produto encontrado
+                    @if (!string.IsNullOrEmpty(ViewBag.FiltroNome as string))
+                    {
+                        @: com o nome <strong>@ViewBag.FiltroNome</strong>
+                    }
+
+                    @if (!string.IsNullOrEmpty(ViewBag.PrecoMin as string))
+                    {
+                        @: com preço mínimo de <strong>R$@ViewBag.PrecoMin</strong>
+                    }
+
+                    @if (!string.IsNullOrEmpty(ViewBag.PrecoMax as string))
+                    {
+                        @: e preço máximo de <strong>R$@ViewBag.PrecoMax</strong>
+                    }
+
+                    .
+                </div>
+            }
+
+
+            @foreach (var produto in Model)
+            {
+                <div class="col">
+                    <div class="card product-card h-100">
+                        <img src="@produto.Imagem" class="card-img-top product-img" alt="@produto.Nome" />
+                        <div class="card-body product-card-body">
+                            <h5 class="product-title">@produto.Nome</h5>
+                            <span>@((produto.Preco / 100).ToString("C", new System.Globalization.CultureInfo("pt-BR")))</span>
+                            <p class="product-description">@produto.Descricao</p>
+
+                            <div class="rating-stars mb-2">
+                                ★ ★ ★ ★ ☆
+                            </div>
+
+                            <span class="badge-frete">Frete grátis</span>
+
+                            <a href="@Url.Action("Detalhes", new { id = produto.Id })" class="btn btn-warning w-100 mt-3">Ver Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
