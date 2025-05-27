@@ -24,7 +24,7 @@
 Comandos pacote NuGet (Entity framework)
 
 
-  Importante: Mude o Server do DefaultConnection no appsettings.json, para o nome do servidor de sua máquina
+  Importante: Mude o Server do DefaultConnection no appsettings.json, para o nome do servidor de sua máquina e com a senha caso necessário
 
   -Realizar os seguintes comandos ou criar o banco manualmente:
   
