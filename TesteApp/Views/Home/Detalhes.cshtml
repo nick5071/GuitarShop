@@ -14,70 +14,70 @@
 
     <style>
         body {
-            background-color: #f5f5f5;
+        background-color: #f5f5f5;
         }
 
         .product-detail-card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            padding: 30px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        padding: 30px;
         }
 
         .product-img {
-            width: 100%;
-            max-height: 500px;
-            object-fit: cover;
-            border-radius: 8px;
+        width: 100%;
+        max-height: 500px;
+        object-fit: cover;
+        border-radius: 8px;
         }
 
         .product-title {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #333;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
         }
 
         .product-price {
-            font-size: 1.8rem;
-            color: #e60000;
-            font-weight: bold;
+        font-size: 1.8rem;
+        color: #e60000;
+        font-weight: bold;
         }
 
         .price-old {
-            text-decoration: line-through;
-            color: #999;
-            font-size: 1rem;
-            margin-right: 10px;
+        text-decoration: line-through;
+        color: #999;
+        font-size: 1rem;
+        margin-right: 10px;
         }
 
         .badge-frete {
-            background-color: #ffdd00;
-            color: #333;
-            font-weight: bold;
-            border-radius: 5px;
-            padding: 6px 12px;
-            display: inline-block;
+        background-color: #ffdd00;
+        color: #333;
+        font-weight: bold;
+        border-radius: 5px;
+        padding: 6px 12px;
+        display: inline-block;
         }
 
         .rating-stars {
-            color: #ffc107;
-            font-size: 1rem;
+        color: #ffc107;
+        font-size: 1rem;
         }
 
         .product-description {
-            font-size: 1.1rem;
-            color: #555;
+        font-size: 1.1rem;
+        color: #555;
         }
 
         .btn-comprar {
-            background-color: #ff9900;
-            border: none;
-            font-weight: bold;
+        background-color: #ff9900;
+        border: none;
+        font-weight: bold;
         }
 
-            .btn-comprar:hover {
-                background-color: #e68a00;
-            }
+        .btn-comprar:hover {
+        background-color: #e68a00;
+        }
     </style>
 </head>
 <body>
@@ -134,10 +134,17 @@
                 <p class="product-description mt-4">@Model.Descricao</p>
 
                 <a href="#" class="btn btn-comprar btn-lg w-100 mt-4">Comprar agora</a>
-                <a href="@Url.Action("Editar", new {id = Model.Id})" class="btn btn-success btn-lg w-100 mt-2">Editar</a>
-                <form asp-action="Deletar" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');">
-                    <button type="submit" class="btn btn-danger btn-lg w-100 mt-2">Deletar</button>
-                </form>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a href="@Url.Action("Editar", new {id = Model.Id})" class="btn btn-success btn-lg w-100 mt-2">Editar</a>
+                }
+                                
+                @if (User.IsInRole("Admin"))
+                {
+                    <form asp-action="Deletar" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Tem certeza que deseja excluir este produto?');">
+                        <button type="submit" class="btn btn-danger btn-lg w-100 mt-2">Deletar</button>
+                    </form>
+                }
                 <a href="@Url.Action("Produtos")" class="btn btn-secondary btn-lg w-100 mt-2">Voltar</a>
             </div>
         </div>

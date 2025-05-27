@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Esqueci minha senha";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-controller="Home" asp-action="EsqueciSenha" method="post">
+    <div class="form-group">
+        <label for="email">E-mail</label>
+        <input type="email" name="email" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Enviar link de redefinição</button>
+</form>
