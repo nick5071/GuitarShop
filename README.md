@@ -16,6 +16,10 @@
 
 • Bootstrap
 
+• Páginas e métodos somente para Admins usando Roles (Criação de novos produtos, Editar, Deletar produtos/usuarios)
+
+• Envio de Email para mudança de senha usando SMTP Gmail e Token
+
 # É obrigatorio ter o Banco de dados SQL SERVER
 Comandos pacote NuGet (Entity framework)
 
