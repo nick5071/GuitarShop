@@ -10,6 +10,8 @@
  
 • SMTP Gmail
 
+• Data Annotations
+
 • Entity Framework
 
 • Razor Pages
