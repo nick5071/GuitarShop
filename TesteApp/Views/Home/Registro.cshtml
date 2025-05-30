@@ -56,22 +56,27 @@
             </div>
         }
 
+        @if (TempData["Erro"] != null)
+        {
+            <div class="alert alert-danger text-center">@TempData["Erro"]</div>
+        }
+
         <form method="post" asp-action="Register" asp-controller="Home" novalidate>
             <div class="mb-3">
                 <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" placeholder="Digite seu e-mail" />
+                <input asp-for="Email" class="form-control" placeholder="Digite seu e-mail" maxlength="50"/>
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
+                <label class="form-label">Senha</label>
                 <input asp-for="Password" type="password" class="form-control" placeholder="Digite sua senha" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label asp-for="ConfirmPassword" class="form-label"></label>
-                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirme sua senha" />
+                <label class="form-label">Confirme sua senha</label>
+                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirme sua senha" maxlength="30" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
 

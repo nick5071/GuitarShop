@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TesteApp.Models;
+using System.Text.RegularExpressions;
 
 namespace TesteApp.Controllers
 {
@@ -42,6 +43,17 @@ namespace TesteApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(Registro model)
         {
+            if(model.Email.Length > 100)
+            {
+                TempData["Erro"] = "O email deve ter no máximo 100 caracteres";
+                return RedirectToAction("Registro");
+            }
+            var usuarioExistente = await _userManager.FindByEmailAsync(model.Email);
+            if (usuarioExistente != null)
+            {
+                ModelState.AddModelError(string.Empty, "Este e-mail já está cadastrado.");
+                return View("Registro", model);
+            }
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser { UserName = model.Email, Email = model.Email };
@@ -434,6 +446,7 @@ namespace TesteApp.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> RedefinirSenha(RedefinirSenhaViewModel model)
         {
             if (!ModelState.IsValid)
@@ -538,6 +551,99 @@ namespace TesteApp.Controllers
             await _userManager.DeleteAsync(user);
             TempData["Sucesso"] = "Usuário deletado com sucesso.";
             return RedirectToAction("PaginaAdmin");
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> AtualizarDadosUsuario(string nomeCompleto, string telefone)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (!string.IsNullOrWhiteSpace(telefone))
+            {
+                if (telefone.Length < 14 || !Regex.IsMatch(telefone, @"^\(\d{2}\) \d{5}-\d{4}$"))
+                {
+                    TempData["Erro"] = "Número de telefone inválido. Use o formato (99) 99999-9999.";
+                    return RedirectToAction("PaginaUsuario");
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(nomeCompleto))
+            {
+                if (nomeCompleto.Length > 100)
+                {
+                    TempData["Erro"] = "O nome completo deve ter no máximo 100 caracteres.";
+                    return RedirectToAction("PaginaUsuario");
+                }
+            }
+
+            bool alterado = false;
+
+            if (!string.IsNullOrWhiteSpace(telefone) && telefone != user.PhoneNumber)
+            {
+                user.PhoneNumber = telefone;
+                alterado = true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(nomeCompleto) && nomeCompleto != user.UserName)
+            {
+                user.UserName = nomeCompleto;
+                alterado = true;
+            }
+
+            if (alterado)
+            {
+                var result = await _userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    await _signInManager.RefreshSignInAsync(user);
+                    TempData["Sucesso"] = "Dados atualizados!";
+                    return RedirectToAction("PaginaUsuario");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+            else
+            {
+                TempData["Sucesso"] = "Nenhuma alteração detectada.";
+            }
+
+            return View("PaginaUsuario");
+        }
+
+        [Authorize]
+        public async Task<IActionResult> DeletarUsuarioLogadoAsync(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                TempData["Erro"] = "Usuário não encontrado.";
+                return RedirectToAction("Login");
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                await _signInManager.SignOutAsync();
+                TempData["Sucesso"] = "Conta excluída com sucesso.";
+                return RedirectToAction("Login"); 
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
+            TempData["Erro"] = "Erro ao excluir conta.";
+            return RedirectToAction("PaginaUsuario");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

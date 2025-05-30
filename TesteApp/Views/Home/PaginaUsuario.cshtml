@@ -24,14 +24,45 @@
             background-color: #f5f5f5;
         }
 
-        .account-container {
+        .main-container {
+            display: flex;
+            max-width: 1000px;
+            margin: 50px auto;
             background-color: #fff;
             border-radius: 8px;
-            padding: 30px;
-            max-width: 500px;
-            margin: 80px auto;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
             border: 2px solid #ffdd00;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #343a40;
+            color: #fff;
+            padding: 20px;
+        }
+
+            .sidebar h5 {
+                color: #ffdd00;
+                margin-bottom: 20px;
+            }
+
+            .sidebar a {
+                display: block;
+                color: #fff;
+                padding: 10px 0;
+                text-decoration: none;
+                border-bottom: 1px solid #555;
+            }
+
+                .sidebar a:hover {
+                    background-color: #495057;
+                    padding-left: 5px;
+                }
+
+        .content {
+            flex: 1;
+            padding: 30px;
         }
 
         .account-title {
@@ -47,55 +78,107 @@
         .info-value {
             color: #333;
         }
+
+        .form-section {
+            margin-top: 30px;
+        }
     </style>
 </head>
-
-@if (TempData["Sucesso"] != null)
-{
-    <div class="alert alert-success text-center">@TempData["Sucesso"]</div>
-}
-@if (TempData["Erro"] != null)
-{
-    <div class="alert alert-danger text-center">@TempData["Erro"]</div>
-}
 <body>
-    <div class="account-container">
-        <h3 class="account-title">Informações da Conta</h3>
+    @if (TempData["Sucesso"] != null)
+    {
+        <div class="alert alert-success text-center">@TempData["Sucesso"]</div>
+    }
+    @if (TempData["Erro"] != null)
+    {
+        <div class="alert alert-danger text-center">@TempData["Erro"]</div>
+    }
 
-        <dl class="row">
-            <dt class="col-sm-4 info-label">Nome de usuário:</dt>
-            <dd class="col-sm-8 info-value">@user.UserName</dd>
 
-            <dt class="col-sm-4 info-label">Email:</dt>
-            <dd class="col-sm-8 info-value">@user.Email</dd>
-        </dl>
+    <div class="main-container">
 
-        <hr />
-        <h5 class="text-center mb-3">Alterar Senha</h5>
+        <div class="sidebar">
+            <h5>Minha Conta</h5>
+            <a href="#dados">Dados do Usuário</a>
+            <a href="#senha">Alterar Senha</a>
+            <a href="/Home/Produtos">Voltar</a>
+        </div>
 
-        <form asp-action="AlterarSenha" method="post">
-            <div class="mb-3">
-                <label class="form-label">Senha atual</label>
-                <input type="password" name="senhaAtual" class="form-control" required />
+        <div class="content">
+            <h3 class="account-title" id="dados">Dados da Conta</h3>
+
+            <dl class="row">
+                <dt class="col-sm-4 info-label">Nome de usuário:</dt>
+                <dd class="col-sm-8 info-value">@user.UserName</dd>
+
+                <dt class="col-sm-4 info-label">Email:</dt>
+                <dd class="col-sm-8 info-value">@user.Email</dd>
+
+                <dt class="col-sm-4 info-label">Telefone:</dt>
+                <dd class="col-sm-8 info-value">@user.PhoneNumber</dd>
+            </dl>
+
+            <div class="form-section">
+                <form asp-action="AtualizarDadosUsuario" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Nome de usuário</label>
+                        <input type="text" name="nomeCompleto" class="form-control" placeholder="Digite seu nome de usuário" maxlength="100"/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Telefone</label>
+                        <input type="tel" id="telefone" name="telefone" class="form-control" placeholder="(xx) xxxxx-xxxx" maxlength="15"/>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Atualizar Dados</button>
+                    </div>
+                </form>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Nova senha</label>
-                <input type="password" name="novaSenha" class="form-control" required />
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Confirmar nova senha</label>
-                <input type="password" name="confirmarSenha" class="form-control" required />
-            </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-warning">Atualizar Senha</button>
-            </div>
-        </form>
 
-        <div class="text-center mt-4">
-            <a class="btn btn-outline-primary" asp-controller="Home" asp-action="Produtos">Voltar</a>
+            <hr id="senha" />
+            <h5 class="text-center mb-3">Alterar Senha</h5>
+
+            <form asp-action="AlterarSenha" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Senha atual</label>
+                    <input type="password" name="senhaAtual" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nova senha</label>
+                    <input type="password" name="novaSenha" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Confirmar nova senha</label>
+                    <input type="password" name="confirmarSenha" class="form-control" required />
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-warning">Atualizar Senha</button>
+                </div>
+            </form>
+            <form asp-action="DeletarUsuarioLogado" asp-controller="Home" asp-route-id="@user.Id" method="post"
+                  onsubmit="return confirm('Tem certeza que deseja excluir sua conta?');">
+                <button type="submit" class="btn btn-danger">Deletar Conta</button>
+            </form>
         </div>
     </div>
 
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.8/dist/inputmask.min.js"></script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            if (window.Inputmask) {
+                Inputmask({
+                    mask: "(99) 99999-9999",
+                    placeholder: "_",
+                    showMaskOnHover: false,
+                    showMaskOnFocus: true
+                }).mask("#telefone");
+            } else {
+                console.error("Inputmask não está disponível.");
+            }
+        });
+    </script>
 </body>
 </html>
