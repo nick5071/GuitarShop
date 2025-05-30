@@ -446,7 +446,6 @@ namespace TesteApp.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> RedefinirSenha(RedefinirSenhaViewModel model)
         {
             if (!ModelState.IsValid)
@@ -458,7 +457,7 @@ namespace TesteApp.Controllers
             if (user == null)
             {
                 TempData["Erro"] = "Usuário não encontrado.";
-                return RedirectToAction("Login");
+                return RedirectToAction();
             }
 
             var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NovaSenha);

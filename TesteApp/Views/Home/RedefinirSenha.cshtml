@@ -1,8 +1,19 @@
 ﻿@model GuitarShop.Models.RedefinirSenhaViewModel
 
+@if (TempData["Sucesso"] != null)
+{
+    <div class="alert alert-success text-center">@TempData["Sucesso"]</div>
+}
+@if (TempData["Erro"] != null)
+{
+    <div class="alert alert-danger text-center">@TempData["Erro"]</div>
+}
+
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
 <h2>Redefinir Senha</h2>
 
-<form asp-action="RedefinirSenha" method="post">
+<form asp-action="RedefinirSenha" asp-controller="Home" method="post">
     <input type="hidden" asp-for="Email" />
     <input type="hidden" asp-for="Token" />
 
@@ -21,8 +32,8 @@
     <button type="submit" class="btn btn-primary">Redefinir Senha</button>
 </form>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
 }
