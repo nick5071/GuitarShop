@@ -35,7 +35,7 @@ Comandos pacote NuGet (Entity framework)
   • Update-Database (atualizar banco de dados)
 
 # Importante:
-Para alteração de senha funcionar por Envio de email na aba de Login você deve mudar o:
+Para alteração de senha funcionar por Envio de email na aba de Login, você deve mudar o:
         "Username": "SeuEmail",
         "Password": "SenhaDoSeuEmail"
 
